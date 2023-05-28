@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration As a Professional</title>
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    h2 {
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .button-container {
+      text-align: center;
+    }
+    
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    .button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Registration Form</h2>
+    <form id="registration-form">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="experience">Experience:</label>
+        <input type="text" id="experience" name="experience" required>
+      </div>
+      <div class="form-group">
+        <label for="field">Field of Work:</label>
+        <select id="field" name="field" required>
+          <option value="">Select Field</option>
+          <option value="plumber">Plumber</option>
+          <option value="electrician">Electrician</option>
+          <option value="carpenter">Carpenter</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+      <div class="button-container">
+        <button type="submit" class="button">Register</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // JavaScript code
+    document.getElementById('registration-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+      
+        // Fetch form values
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var experience = document.getElementById('experience').value;
+        var field = document.getElementById('field').value;
+        var location = document.getElementById('location').value;
+      
+        // If the location field is empty, fetch the current location
+        if (location === '') {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              // Reverse geocoding to get the location from latitude and longitude
+              var geocoder = new google.maps.Geocoder();
+              var latlng = new google.maps.LatLng(latitude, longitude);
+              geocoder.geocode({ 'latLng': latlng }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                  if (results[0]) {
+                    location = results[0].formatted_address;
+                    // Proceed with form submission
+                    submitForm();
+                  } else {
+                    // Reverse geocoding failed, handle error
+                    alert('Failed to fetch location. Please enter manually.');
+                  }
+                } else {
+                  // Reverse geocoding failed, handle error
+                  alert('Failed to fetch location. Please enter manually.');
+                }
+              });
+            }, function(error) {
+              // Geolocation failed, handle error
+              alert('Failed to fetch location. Please enter manually.');
+            });
+          } else {
+            // Geolocation not supported, handle error
+            alert('Geolocation is not supported by your browser. Please enter manually.');
+          }
+        } else {
+          // Location field is already filled, proceed with form submission
+          submitForm();
+        }
+      
+        // Function to submit the form data
+        function submitForm() {
+          // Create an object with the form data
+          var formData = {
+            name: name,
+            email: email,
+            password: password,
+            experience: experience,
+            field: field,
+            location: location
+          };
+      
+          // Perform AJAX request to submit the form data
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'process-registration.php', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              // Process the response from the server
+              var response = JSON.parse(xhr.responseText);
+              if (response.success) {
+                // Registration successful, redirect to success page
+                window.location.href = 'success.html';
+              } else {
+                // Registration failed, display error message
+                alert(response.message);
+              }
+            }
+          };
+          xhr.send(JSON.stringify(formData));
+        }
+      });
+      

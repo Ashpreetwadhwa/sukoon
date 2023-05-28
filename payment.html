@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Page</title>
+  <style>
+    .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .payment-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .payment-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .payment-fields {
+    display: none;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  
+  input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Payment Page</h1>
+    <form id="paymentForm">
+      <div class="payment-options">
+        <label for="cardPayment">
+          <input type="radio" id="cardPayment" name="paymentMethod" value="card" checked>
+          Card Payment
+        </label>
+        <label for="upiPayment">
+          <input type="radio" id="upiPayment" name="paymentMethod" value="upi">
+          UPI Payment
+        </label>
+        <label for="Cash ON Delivery">
+          <input type="radio" id="Cash ON Delivery" name="paymentMethod" value="Cash ON Delivery">
+          Cash On Delivery
+        </label>
+      </div>
+
+      <div id="cardPaymentFields" class="payment-fields">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber" required>
+        <div>
+        <label for="cardExpiry">Card Expiry:</label><br>
+        <input type="date" id="cardExpiry" name="cardExpiry" required>
+        </div>
+        <label for="cardCVV">Card CVV:</label>
+        <input type="text" id="cardCVV" name="cardCVV" required>
+      </div>
+
+      <div id="upiPaymentFields" class="payment-fields" style="display: none;">
+        <label for="upiId">UPI ID:</label>
+        <input type="text" id="upiId" name="upiId" required>
+      </div>
+
+      <div id="netBankingPaymentFields" class="payment-fields" style="display: none;">
+        <label for="bankName">Bank Name:</label>
+        <input type="text" id="bankName" name="bankName" required>
+      </div>
+
+      <input type="submit" value="Pay Now">
+    </form>
+  </div>
+
+  <script src="https://checkout.paytm.com/v2/checkout.js"></script>
+  <script>
+    const paymentOptions = document.querySelectorAll('input[name="paymentMethod"]');
+    const paymentFields = document.querySelectorAll('.payment-fields');
+
+    paymentOptions.forEach(function(option) {
+      option.addEventListener('change', function() {
+        hideAllPaymentFields();
+        const selectedOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+        document.getElementById(`${selectedOption}PaymentFields`).style.display = "block";
+      });
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      initiatePayment();
+    });
+
+    function hideAllPaymentFields() {
+      paymentFields.forEach(function(field) {
+        field.style.display = "none";
+      });
+    }
+
+    function initiatePayment() {
+      const selectedOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+      if (selectedOption === 'card') {
+        // Perform necessary validations on the card payment fields
+
+        var cardNumber = document.getElementById('cardNumber').value;
+        var cardExpiry = document.getElementById('cardExpiry').value;
+        var cardCVV = document.getElementById('cardCVV').value
+        // Perform necessary validations on the card payment fields
+        var cardNumber = document.getElementById('cardNumber').value;
+        var cardExpiry = document.getElementById('cardExpiry').value;
+        var cardCVV = document.getElementById('cardCVV').value;
+
+        // Call the appropriate payment gateway API based on the selected option
+        if (selectedOption === 'card') {
+          // Call the card payment API
+          // ...
+        } else if (selectedOption === 'upi') {
+          // Perform necessary validations on the UPI payment fields
+          var upiId = document.getElementById('upiId').value;
+
+          // Call the UPI payment API
+          // ...
+        } else if (selectedOption === 'netBanking') {
+          // Perform necessary validations on the net banking fields
+          var bankName = document.getElementById('bankName').value;
+
+          // Call the net banking payment API
+          // ...
+        }
+      }
+    }
+  </script>
+</body>
+</html>
+
